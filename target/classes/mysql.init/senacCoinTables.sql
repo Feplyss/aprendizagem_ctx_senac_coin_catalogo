@@ -37,14 +37,14 @@ CREATE TABLE IF NOT EXISTS senac_coin_movimentacao (
 	senac_coin_id BIGINT(20) NOT NULL,
     usuario_id VARCHAR(255) NOT NULL,
     PRIMARY KEY (senac_coin_movimentacao_id),
-	FOREIGN KEY (senac_coin_id) REFERENCES senac_coin_id
+	FOREIGN KEY (senac_coin_id) REFERENCES senac_coin(senac_coin_id),
     FOREIGN KEY (usuario_id) REFERENCES usuario(Id)
 );
 
 
 INSERT INTO senacCoin.usuario
-(Id, usuario_cpf, usuario_nome_completo, usuario_apelido, usuario_email, usuario_data_nascimento, usuario_telefone, usuario_data_cadastro, usuario_status, user_name)
-VALUES('96540dc2-35b6-4de1-b3c2-814dbf16104d', '12345678911', 'victor', 'dale', 'a@a.com', '2011-12-18 13:17:17', '212121', '2011-12-18 13:17:17', 0, 'doly');
+(Id, usuario_cpf, usuario_nome_completo, usuario_apelido, usuario_email, usuario_data_nascimento, usuario_telefone, usuario_data_cadastro, usuario_foto, usuario_status, user_name)
+VALUES('96540dc2-35b6-4de1-b3c2-814dbf16104d', '12345678911', 'victor', 'dale', 'a@a.com', '2011-12-18 13:17:17', '212121', '2011-12-18 13:17:17', 'blob', 0, 'doly');
 
 INSERT INTO senacCoin.senac_coin
 (senac_coin_saldo, senac_coin_status, usuario_id)

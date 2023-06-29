@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.senac.projetoIntegrador.senaccoin.dto.SenacCoinMovimentacaoDto;
+import com.senac.projetoIntegrador.senaccoin.exceptions.BalanceNotFoundException;
 import com.senac.projetoIntegrador.senaccoin.exceptions.InsuficientBalanceException;
+import com.senac.projetoIntegrador.senaccoin.exceptions.UserNotFoundException;
 import com.senac.projetoIntegrador.senaccoin.repository.ISenacCoinRepository;
 import com.senac.projetoIntegrador.senaccoin.request.NewTransactionRequest;
 import com.senac.projetoIntegrador.senaccoin.service.ISenacCoinService;
@@ -20,7 +22,7 @@ public class SenacCoinService implements ISenacCoinService {
     ISenacCoinRepository repository;
 
 
-    public void addNewTRansaction(NewTransactionRequest transaction) throws InsuficientBalanceException{
+    public void addNewTRansaction(NewTransactionRequest transaction) throws UserNotFoundException, BalanceNotFoundException, InsuficientBalanceException{
         
         SenacCoinMovimentacaoDto senacCoinMovimentacaoDto = new SenacCoinMovimentacaoDto(
             new Timestamp(System.currentTimeMillis()),
@@ -46,11 +48,11 @@ public class SenacCoinService implements ISenacCoinService {
         
     }
 
-    public List<SenacCoinMovimentacaoDto> getSenacCoinStatement(String userId){
+    public List<SenacCoinMovimentacaoDto> getSenacCoinStatement(String userId) throws UserNotFoundException{
         return repository.getMovementsByUserId(userId);
     }
 
-    public Long getUserBalance(String userId){
+    public Long getUserBalance(String userId) throws UserNotFoundException{
         return repository.getBalanceByUserId(userId);
 
     }

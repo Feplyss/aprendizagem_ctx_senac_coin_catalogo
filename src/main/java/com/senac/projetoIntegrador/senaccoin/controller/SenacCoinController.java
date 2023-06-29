@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.senac.projetoIntegrador.senaccoin.exceptions.BalanceNotFoundException;
 import com.senac.projetoIntegrador.senaccoin.exceptions.InsuficientBalanceException;
+import com.senac.projetoIntegrador.senaccoin.exceptions.UserNotFoundException;
 import com.senac.projetoIntegrador.senaccoin.request.NewTransactionRequest;
 import com.senac.projetoIntegrador.senaccoin.response.BalanceResponse;
 import com.senac.projetoIntegrador.senaccoin.response.ErrorResponse;
@@ -35,7 +37,7 @@ public class SenacCoinController {
     @PostMapping
     public ResponseEntity<NewTransactionResponse> addNewMovement(
             @RequestBody(required = true) NewTransactionRequest newSenacCoinMovement)
-            throws InsuficientBalanceException {
+            throws UserNotFoundException, BalanceNotFoundException, InsuficientBalanceException {
 
         service.addNewTRansaction(newSenacCoinMovement);
         NewTransactionResponse response = new NewTransactionResponse();
@@ -47,7 +49,7 @@ public class SenacCoinController {
 
     @GetMapping("/statement/{id}")
     public ResponseEntity<RetrieveStatementResponse> retrieveStatementByUserId(
-            @PathVariable(required = true, value = "id") String userId){
+            @PathVariable(required = true, value = "id") String userId) throws UserNotFoundException{
         List<StatementResponse> senacCoinMovimentacaoDto = service.getSenacCoinStatement(userId).stream()
                 .map(item -> new StatementResponse(
                         item.getSenacCoinMovimentacaoDate(),
@@ -63,7 +65,7 @@ public class SenacCoinController {
     }
 
     @GetMapping("/balance/{id}")
-    public ResponseEntity<BalanceResponse> retrieveBalance(@PathVariable(required = true, value = "id") String userId) {
+    public ResponseEntity<BalanceResponse> retrieveBalance(@PathVariable(required = true, value = "id") String userId) throws UserNotFoundException{
         Long balance = service.getUserBalance(userId);
 
         BalanceResponse response = new BalanceResponse();

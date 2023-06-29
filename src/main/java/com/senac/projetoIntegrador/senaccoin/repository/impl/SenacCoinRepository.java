@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Repository;
 
 import com.senac.projetoIntegrador.senaccoin.dto.SenacCoinDto;
 import com.senac.projetoIntegrador.senaccoin.dto.SenacCoinMovimentacaoDto;
+import com.senac.projetoIntegrador.senaccoin.exceptions.BalanceNotFoundException;
+import com.senac.projetoIntegrador.senaccoin.exceptions.UserNotFoundException;
 import com.senac.projetoIntegrador.senaccoin.repository.ISenacCoinRepository;
 
 @Repository
@@ -73,24 +76,36 @@ public class SenacCoinRepository implements ISenacCoinRepository {
     }
 
     @Async("asyncExecutor")
-    public CompletableFuture<Integer> updateBalance(SenacCoinMovimentacaoDto movement) {
-        int numberOfRows = this.dbConnection.update(queries.getUpdateSenacCoinAmount(),
-                new Object[] { movement.getSenacCoinMovimentacaoValor() * movement.getSenacCoinMovimentacaoStatus(), movement.getUsuarioId() });
+    public CompletableFuture<Integer> updateBalance(SenacCoinMovimentacaoDto movement) throws UserNotFoundException, BalanceNotFoundException{
+        int numberOfRows = 0;
+        try{
+            numberOfRows = this.dbConnection.update(queries.getUpdateSenacCoinAmount(),
+                new Object[] { movement.getSenacCoinMovimentacaoValor() * movement.getSenacCoinMovimentacaoStatus(), movement.getUsuarioId(), movement.getSenacCoinId()});
+        }catch(EmptyResultDataAccessException | DataIntegrityViolationException e){
+            if(e.getClass() == EmptyResultDataAccessException.class) throw new UserNotFoundException();
+            if(e.getClass() == DataIntegrityViolationException.class) throw new BalanceNotFoundException();
+        }
 
         return CompletableFuture.completedFuture(Integer.valueOf(numberOfRows));
 
     }
 
-    public List<SenacCoinMovimentacaoDto> getMovementsByUserId(String userId){
+    public List<SenacCoinMovimentacaoDto> getMovementsByUserId(String userId) throws UserNotFoundException{
         List<SenacCoinMovimentacaoDto> query = dbConnection.query(queries.getGetMovementsByUserId(), new SenacCoinMovimentacaoMapper(), new Object[] { userId });
         if (query.size() == 0) {
-            throw new EmptyResultDataAccessException("", 1, null);
+            throw new UserNotFoundException();
         }
         return query;
     }
 
-    public Long getBalanceByUserId(String userId){
-        return dbConnection.queryForObject(queries.getGetBalance(), new SenacCoinMapper(), new Object[] { userId }).getSenacCoinSaldo();
+    public Long getBalanceByUserId(String userId) throws UserNotFoundException{
+        Long query;
+        try{
+            query = dbConnection.queryForObject(queries.getGetBalance(), new SenacCoinMapper(), new Object[] { userId }).getSenacCoinSaldo();
+        }catch(EmptyResultDataAccessException e){
+            throw new UserNotFoundException();
+        }
+        return query;
     }
 
 }

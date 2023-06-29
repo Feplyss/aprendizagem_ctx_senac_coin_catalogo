@@ -19,7 +19,7 @@ public class Queries {
     private String updateSenacCoinAmount = """
                 UPDATE senac_coin
                 SET senac_coin_saldo = senac_coin_saldo + ?
-                WHERE usuario_id = ?;
+                WHERE usuario_id = ? AND senac_coin_id = ?;
             """;
 
     public String getInsertMovimentacao() {
