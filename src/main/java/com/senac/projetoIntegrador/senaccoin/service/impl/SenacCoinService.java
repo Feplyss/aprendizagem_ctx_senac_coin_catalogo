@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.senac.projetoIntegrador.senaccoin.dto.SenacCoinMovimentacaoDto;
 import com.senac.projetoIntegrador.senaccoin.exceptions.InsuficientBalanceException;
-import com.senac.projetoIntegrador.senaccoin.exceptions.UserNotFoundException;
 import com.senac.projetoIntegrador.senaccoin.repository.ISenacCoinRepository;
 import com.senac.projetoIntegrador.senaccoin.request.NewTransactionRequest;
 import com.senac.projetoIntegrador.senaccoin.service.ISenacCoinService;
@@ -21,21 +20,22 @@ public class SenacCoinService implements ISenacCoinService {
     ISenacCoinRepository repository;
 
 
-    public void addNewTRansaction(NewTransactionRequest transaction) throws UserNotFoundException, InsuficientBalanceException{
+    public void addNewTRansaction(NewTransactionRequest transaction) throws InsuficientBalanceException{
         
         SenacCoinMovimentacaoDto senacCoinMovimentacaoDto = new SenacCoinMovimentacaoDto(
             new Timestamp(System.currentTimeMillis()),
             transaction.getObservation(),
             transaction.getAmount(),
-            transaction.getMovementStatus(),
+            transaction.getStatus(),
+            transaction.getSenacCoinId(),
             transaction.getUserId()
         );
 
-        if (transaction.getMovementStatus().name().equals("DEBT")){
+        if (transaction.getStatus() == -1){
             Long userBalance = repository.getBalanceByUserId(transaction.getUserId());
 
             if (userBalance - transaction.getAmount() < 0 ){
-                throw new InsuficientBalanceException(String.format("User with id %s doest have enough money to purchase %s", transaction.getUserId(), transaction.getObservation()));
+                throw new InsuficientBalanceException("");
             }
         }
         
@@ -47,10 +47,10 @@ public class SenacCoinService implements ISenacCoinService {
     }
 
     public List<SenacCoinMovimentacaoDto> getSenacCoinStatement(String userId){
-        return repository.getMovimentsByUserId(userId);
+        return repository.getMovementsByUserId(userId);
     }
 
-    public Long getUserBalance(String userId) throws UserNotFoundException{
+    public Long getUserBalance(String userId){
         return repository.getBalanceByUserId(userId);
 
     }

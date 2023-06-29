@@ -4,8 +4,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Queries {
     private String insertMovimentacao = """
-                INSERT INTO senac_coin_movimentacao (senac_coin_movimentacao_data, senac_coin_movimentacao_observacao, senac_coin_movimentacao_valor, senac_coin_movimentacao_status, usuario_id)
-                VALUES (?, ?, ?, ?, ?);
+                INSERT INTO senac_coin_movimentacao (senac_coin_movimentacao_data, senac_coin_movimentacao_observacao, senac_coin_movimentacao_valor, senac_coin_movimentacao_status, senac_coin_id, usuario_id)
+                VALUES (?, ?, ?, ?, ?, ?);
             """;
     private String getMovementsByUserId = """
                 SELECT senac_coin_movimentacao_data, senac_coin_movimentacao_observacao, senac_coin_movimentacao_valor, senac_coin_movimentacao_status FROM senac_coin_movimentacao
@@ -28,10 +28,6 @@ public class Queries {
 
     public String getUpdateSenacCoinAmount() {
         return updateSenacCoinAmount;
-    }
-
-    public String getGetMovimentsByUserId() {
-        return getMovementsByUserId;
     }
 
     public String getGetBalance() {

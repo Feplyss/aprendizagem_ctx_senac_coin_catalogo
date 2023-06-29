@@ -1,17 +1,16 @@
 package com.senac.projetoIntegrador.senaccoin.response;
 
 import java.sql.Timestamp;
-import com.senac.projetoIntegrador.senaccoin.dto.enums.MovimentStatus;
 
 public class StatementResponse {
     private Timestamp date;
     private String observation;
     private Long transactionAmount;
-    private MovimentStatus status;
+    private int status;
 
     
 
-    public StatementResponse(Timestamp timestamp, String observation, Long transactionAmount, MovimentStatus status) {
+    public StatementResponse(Timestamp timestamp, String observation, Long transactionAmount, int status) {
         this.date = timestamp;
         this.observation = observation;
         this.transactionAmount = transactionAmount;
@@ -42,11 +41,11 @@ public class StatementResponse {
         this.transactionAmount = transactionAmount;
     }
 
-    public MovimentStatus getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(MovimentStatus status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

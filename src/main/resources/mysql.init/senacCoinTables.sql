@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS usuario (
 	usuario_data_nascimento DATETIME(6) NOT NULL,
 	usuario_telefone VARCHAR(20) NOT NULL,
 	usuario_data_cadastro DATETIME(6) NOT NULL,
-	-- usuario_foto LONGBLOB NOT NULL,
+	usuario_foto LONGBLOB NOT NULL,
 	usuario_status INT(11) NOT NULL,
 	user_name VARCHAR(256) NOT NULL,
 	PRIMARY KEY (Id)
@@ -33,9 +33,11 @@ CREATE TABLE IF NOT EXISTS senac_coin_movimentacao (
     senac_coin_movimentacao_data DATETIME NOT NULL,
     senac_coin_movimentacao_observacao LONGTEXT NOT NULL,
     senac_coin_movimentacao_valor BIGINT(20) NOT NULL,
-    senac_coin_movimentacao_status ENUM('CREDIT', 'DEBT'),
+    senac_coin_movimentacao_status INT(11) NOT NULL,
+	senac_coin_id BIGINT(20) NOT NULL,
     usuario_id VARCHAR(255) NOT NULL,
     PRIMARY KEY (senac_coin_movimentacao_id),
+	FOREIGN KEY (senac_coin_id) REFERENCES senac_coin_id
     FOREIGN KEY (usuario_id) REFERENCES usuario(Id)
 );
 

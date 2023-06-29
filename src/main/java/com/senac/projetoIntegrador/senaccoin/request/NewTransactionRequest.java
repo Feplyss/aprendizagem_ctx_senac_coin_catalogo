@@ -1,53 +1,50 @@
 package com.senac.projetoIntegrador.senaccoin.request;
 
-import com.senac.projetoIntegrador.senaccoin.dto.enums.MovimentStatus;
-
 public class NewTransactionRequest {
-
-    private Long amount;
-    private String userId;
     private String observation;
-    private int senacCoinStatus;
-    private MovimentStatus movementStatus;
-
-    public Long getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Long amount) {
-        this.amount = amount;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+    private Long amount;
+    private int status;
+    private Long senacCoinId;
+    private String userId;
 
     public String getObservation() {
-        return observation;
+        return this.observation;
     }
 
     public void setObservation(String observation) {
         this.observation = observation;
     }
 
-    public int getSenacCoinStatus() {
-        return senacCoinStatus;
+    public Long getAmount() {
+        return this.amount;
     }
 
-    public void setSenacCoinStatus(int senacCoinStatus) {
-        this.senacCoinStatus = senacCoinStatus;
+    public void setAmount(Long amount) {
+        this.amount = amount;
     }
 
-    public MovimentStatus getMovementStatus() {
-        return movementStatus;
+    public int getStatus() {
+        return this.status;
     }
 
-    public void setMovementStatus(MovimentStatus movementStatus) {
-        this.movementStatus = movementStatus;
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public Long getSenacCoinId() {
+        return this.senacCoinId;
+    }
+
+    public void setSenacCoinId(Long senacCoinId) {
+        this.senacCoinId = senacCoinId;
+    }
+
+    public String getUserId() {
+        return this.userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
 }

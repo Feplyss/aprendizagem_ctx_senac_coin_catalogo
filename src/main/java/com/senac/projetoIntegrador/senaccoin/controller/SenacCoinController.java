@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.senac.projetoIntegrador.senaccoin.exceptions.InsuficientBalanceException;
-import com.senac.projetoIntegrador.senaccoin.exceptions.UserNotFoundException;
 import com.senac.projetoIntegrador.senaccoin.request.NewTransactionRequest;
 import com.senac.projetoIntegrador.senaccoin.response.BalanceResponse;
 import com.senac.projetoIntegrador.senaccoin.response.ErrorResponse;
@@ -36,7 +35,7 @@ public class SenacCoinController {
     @PostMapping
     public ResponseEntity<NewTransactionResponse> addNewMovement(
             @RequestBody(required = true) NewTransactionRequest newSenacCoinMovement)
-            throws UserNotFoundException, InsuficientBalanceException {
+            throws InsuficientBalanceException {
 
         service.addNewTRansaction(newSenacCoinMovement);
         NewTransactionResponse response = new NewTransactionResponse();
@@ -48,10 +47,12 @@ public class SenacCoinController {
 
     @GetMapping("/statement/{id}")
     public ResponseEntity<RetrieveStatementResponse> retrieveStatementByUserId(
-            @PathVariable(required = true, value = "id") String userId) {
+            @PathVariable(required = true, value = "id") String userId){
         List<StatementResponse> senacCoinMovimentacaoDto = service.getSenacCoinStatement(userId).stream()
-                .map(item -> new StatementResponse(item.getSenacCoinMovimentacaoDate(),
-                        item.getSenacCoinMovimentacaoObservacao(), item.getSenacCoinMovimentacaoValor(),
+                .map(item -> new StatementResponse(
+                        item.getSenacCoinMovimentacaoDate(),
+                        item.getSenacCoinMovimentacaoObservacao(), 
+                        item.getSenacCoinMovimentacaoValor(),
                         item.getSenacCoinMovimentacaoStatus()))
                 .collect(Collectors.toList());
 
@@ -62,8 +63,7 @@ public class SenacCoinController {
     }
 
     @GetMapping("/balance/{id}")
-    public ResponseEntity<BalanceResponse> retrieveBalance(@PathVariable(required = true, value = "id") String userId)
-            throws UserNotFoundException {
+    public ResponseEntity<BalanceResponse> retrieveBalance(@PathVariable(required = true, value = "id") String userId) {
         Long balance = service.getUserBalance(userId);
 
         BalanceResponse response = new BalanceResponse();
@@ -76,17 +76,5 @@ public class SenacCoinController {
     public ResponseEntity<ErrorResponse> httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse("Error parsing JSON", e.getMessage(), null));
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> userNotFoundExceptionHandler(UserNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse("Error finding user", e.getMessage(), "user may not exists"));
-    }
-
-    @ExceptionHandler(InsuficientBalanceException.class)
-    public ResponseEntity<ErrorResponse> insuficientBalanceExceptionHandler(InsuficientBalanceException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse("Not enough money", e.getMessage(), null));
     }
 }
