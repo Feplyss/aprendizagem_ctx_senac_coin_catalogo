@@ -4,7 +4,7 @@ services:
   api:
     build:
       context: .
-    container_name: projeto-integrador-backend
+    container_name: projeto-integrador-backend-ctx-catalogo
     ports:
       - 8080:8080
 
